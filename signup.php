@@ -15,6 +15,15 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         exit;
     }
 
+    // step 1.5 If this is the only user in the folder, create a admin.txt file in the users folder and set its content to "allaccess"
+    $adminFile = $userFolder . '/admin.txt';
+    if (count(glob('data/users/*')) === 1) {
+        file_put_contents($adminFile, 'allaccess');
+    } elseif (!file_exists($adminFile)) {
+        // If it's not the only user, ensure admin.txt does not exist
+        unlink($adminFile);
+    }
+
     // Step 2: Create a password.txt file with the $password in it, in data/users/$username/
     $passwordFile = $userFolder . '/password.txt';
     file_put_contents($passwordFile, $password);
@@ -43,4 +52,3 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     <input type="submit" value="Sign Up">
 </form>
 </div>
-
