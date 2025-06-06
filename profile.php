@@ -1,6 +1,14 @@
 <?php
 include "design.php";
 include "ostatus.php";
+
+// Check if the user is logged in
+if (isset($_GET['user'])) {
+    $username = $_GET['user'];
+} else {
+    $username = $_SESSION['username'];
+}
+
 $admin = 'data/users/' . $username . '/admin.txt';
 $allowed = "allaccess";
 $allowedtomodule = "allow:users";
@@ -9,12 +17,7 @@ $profileText = file_get_contents("data/users/$username/about.txt");
 $onlineStatus = file_get_contents("data/users/$username/ostatus.txt");
 $modules = file_get_contents("data/users/$username/modules.txt");
 
-// Check if the user is logged in
-if (isset($_GET['user'])) {
-    $username = $_GET['user'];
-} else {
-    $username = $_SESSION['username'];
-}
+
 
 if(isset($_GET['repport'])){
     $repport = $_GET['repport'];
