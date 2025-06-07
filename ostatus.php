@@ -13,4 +13,9 @@ if (file_get_contents($banfile) == "1") {
     exit;
 }
 
+// hvis der med en fejl er oprettet en ostatus.txt fil i data/users i stedet for data/users/$username/ så slet denne ostatus.xtxt fil
+if (file_exists("data/users/ostatus.txt") && !file_exists($file)) {
+    unlink("data/users/ostatus.txt");
+}
+
 ?>
