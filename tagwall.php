@@ -10,6 +10,13 @@ $file_content = file_get_contents($adminfile);
 $allowed = "allaccess";
 $allowedtomodule = "allow:tagwall";
 
+// lav en indexvariabel. gennemgå så hver gang der står ":end" og lav et linjeskift efter ":end" så der altid er et linjeskift efter hver besked
+$tagwall_content = file_get_contents($tagwallpath);
+// Tilføj kun linjeskift efter ":end", hvis der ikke allerede er et
+$tagwall_content = preg_replace('/(:end)(?!\r?\n)/', ":end\n", $tagwall_content);
+file_put_contents($tagwallpath, $tagwall_content);
+
+
 // tjek hvis data/users/$username/ indeholder tagwallban.txt og hvis det gør, så redirect til index.php
 if (file_exists('data/users/' . $username . '/tagwallban.txt')) {
     header('Location: index.php');
@@ -20,32 +27,26 @@ if (file_exists('data/users/' . $username . '/tagwallban.txt')) {
     // hvis tagwallsettings.txt indeholder "tagwall_closed:false" så send beskeden
   
             $tagwall_text = $_POST['tagwall_text'];
-            $tagwall_entry = time() . ':' . $username . ':' . $tagwall_text . PHP_EOL;
+            $tagwall_entry = time() . ':' . $username . ':' . $tagwall_text . ":end";
 
             file_put_contents($tagwallpath, $tagwall_entry, FILE_APPEND);
+
+            // Omdiriger tilbage til tagwall.php
             header('Location: tagwall.php');
-            
-       
-    }
+        }
     
     
-    
-
-
-
-if (isset($_GET['mode']) && $_GET['mode'] === 'delete') {
-    $id = isset($_GET['id']) ? $_GET['id'] : null;
+    if (isset($_GET['mode']) && $_GET['mode'] === 'delete') {
+   // i stedet for at slette en besked, så ret den til teksten "Denne besked er blevet slettet"
+    $id = $_GET['id'];
     $tagwall_messages = file($tagwallpath, FILE_IGNORE_NEW_LINES | FILE_SKIP_EMPTY_LINES);
+    if (isset($tagwall_messages[$id])) {
+        $tagwall_messages[$id] = time() . ':' . $username . ':Denne besked er blevet slettet :end'. PHP_EOL;
+        file_put_contents($tagwallpath, implode('', $tagwall_messages));
 
-    if ($id !== null && isset($tagwall_messages[$id])) {
-        unset($tagwall_messages[$id]);
-        
-        
-        $tagwall_messages = array_values(array_filter($tagwall_messages));
-
-        file_put_contents($tagwallpath, implode("\n", $tagwall_messages));
         
     }
+    // Omdiriger tilbage til tagwall.php
     
     header('Location: tagwall.php');
 }
@@ -58,6 +59,8 @@ if (isset($_GET['mode']) && $_GET['mode'] === 'clear') {
     header('Location: tagwall.php');
     exit; // Sørg for at afslutte scriptet efter header-omdirigering
 }
+
+
 
 $messages_per_page = 10;
 $current_page = isset($_GET['page']) ? $_GET['page'] : 1;
@@ -81,8 +84,10 @@ $tagwall_messages = array_slice($tagwall_messages, $offset, $messages_per_page);
     </form>
 
     <?php foreach ($tagwall_messages as $line => $message) {
+    
     list($time, $user, $text) = explode(':', $message, 3);
     $id = $total_messages - $line - 1; // Få det korrekte id
+    $text = str_replace(':end', '', $text); // Fjern ":end" fra beskeden
     ?>
     <div class="message">
         <span class="username"><a href="profile.php?user=<?php echo $user; ?>"><?php echo $user; ?></a></span>
