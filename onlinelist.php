@@ -57,6 +57,11 @@ foreach ($users as $username) {
         // Display the username and status
         echo "Username: <a href='profile.php?user=$username'>$username</a>, <span style='color: $color;'>$statustext</span><br>";
         echo "sidst online: " . date('d-m-Y H:i:s', $status) . "<br><br>";
+        // hvis brugeren har en banned.txt som indeholder teksten "1" så vis at brugeren er banned
+        $bannedFilePath = $usersDirectory . $username . '/banned.txt';
+        if (file_exists($bannedFilePath) && trim(file_get_contents($bannedFilePath)) === '1') {
+            echo "<span style='color: red;'>Brugeren er banned</span><br>";
+        }
     }
 }
 ?>
