@@ -61,7 +61,7 @@ if(isset($_GET['repport'])){
 window.onload = function() {
     var farveprofil = document.getElementById('farveprofil');
     if (farveprofil) {
-        var colorsFile = "/data/users/<?php echo $_SESSION['username']; ?>/colors.txt";
+        var colorsFile = "/data/users/<?php echo $username; ?>/colors.txt";
         console.log(colorsFile);
         fetch(colorsFile)
             .then(response => response.text())
