@@ -53,14 +53,18 @@ include "ostatus.php";
         }
     } elseif (isset($_GET['mode']) && $_GET['mode'] === 'remove') {
         $photoDirectory = "data/users/" . $_SESSION['username'] . "/photos/";
-        $photos = $_POST['photos'];
-        foreach ($photos as $photo) {
-            $photoPath = $photoDirectory . $photo;
-            if (unlink($photoPath)) {
-                echo "Photo deleted successfully.";
-            } else {
-                echo "Failed to delete photo.";
+        if (isset($_POST['photos']) && is_array($_POST['photos']) && count($_POST['photos']) > 0) {
+            $photos = $_POST['photos'];
+            foreach ($photos as $photo) {
+                $photoPath = $photoDirectory . $photo;
+                if (unlink($photoPath)) {
+                    echo "Photo deleted successfully.";
+                } else {
+                    echo "Failed to delete photo.";
+                }
             }
+        } else {
+            echo "No photos selected for deletion.";
         }
     }
     ?>
