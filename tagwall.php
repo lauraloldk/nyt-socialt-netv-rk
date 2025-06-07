@@ -65,7 +65,7 @@ $tagwall_messages = array_slice($tagwall_messages, $offset, $messages_per_page);
 <div id="content">
     <h1>Tagwall</h1>
     <form method="POST" action="tagwall.php?mode=send">
-        <textarea name="tagwall_text"></textarea>
+        <textarea name="tagwall_text" style="height: 132px; width: 1089px;"></textarea>
         <button type="submit">Send</button>
         <a href="tagwall.php?mode=clear">Tøm Tagwall</a>
     </form>
