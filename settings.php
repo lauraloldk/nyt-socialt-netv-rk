@@ -81,7 +81,7 @@ if (isset($_GET['module']) && $_GET['module'] === 'about') {
         <button type="submit">Gem</button>
     </form>
     <?php
-} elseif (isset($_GET['module']) && $_GET['module'] === 'sletprofil') 
+} elseif (isset($_GET['module']) && $_GET['module'] === 'sletprofil_confirm') 
 {
     // script og form til at slette data/users/$username mappen
   $profilepath = "data/users/$username";
@@ -96,6 +96,15 @@ if (isset($_GET['module']) && $_GET['module'] === 'about') {
   }    
     echo "Profilen er nu slettet ";
     header("Location: logout.php");
+} elseif (isset($_GET['module']) && $_GET['module'] === 'sletprofil') {
+    // Vis formularen til at slette profilen
+    ?>
+    <h1>Indstillinger / Sletning af profil</h1>
+    <p>Er du sikker på, at du vil slette din profil? Dette kan ikke fortrydes.</p>
+    <form method="POST" action="settings.php?module=sletprofil_confirm">
+        <button type="submit">Slet profil</button>
+    </form>
+    <?php
 }
  
 
@@ -108,7 +117,7 @@ else {
         <li><a href="settings.php?module=about">Om mig</a></li>
         
         <li><a href="settings.php?module=farveprofil">Farveprofil (kun vist på profiler)</a></li>
-        <li><a href="settings.php?module=sletprofil">Slet profil (der er ingen vej tilbage hvis du trykker her)</a></li>
+        <li><a href="settings.php?module=sletprofil">Slet profil</a></li>
         <li><a href="modules.php">Funktioner og moduler</a></li>
     </ul>
 
