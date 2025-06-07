@@ -16,29 +16,21 @@ if (file_exists('data/users/' . $username . '/tagwallban.txt')) {
     exit;
 }
 
-if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_GET['mode']) && $_GET['mode'] === 'send') {
+    if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_GET['mode']) && $_GET['mode'] === 'send') {
     // hvis tagwallsettings.txt indeholder "tagwall_closed:false" så send beskeden
-    if (file_exists($tagwallsettings)) {
-        $settings = file_get_contents($tagwallsettings);
-        if (strpos($settings, 'tagwall_closed:false')) {
+  
             $tagwall_text = $_POST['tagwall_text'];
             $tagwall_entry = time() . ':' . $username . ':' . $tagwall_text . PHP_EOL;
 
             file_put_contents($tagwallpath, $tagwall_entry, FILE_APPEND);
             header('Location: tagwall.php');
             
-            exit;
-        } 
-        else 
-        {
-
-            header('Location: tagwall.php');
-        }
+       
     }
     
     
     
-}
+
 
 
 if (isset($_GET['mode']) && $_GET['mode'] === 'delete') {
@@ -67,36 +59,6 @@ if (isset($_GET['mode']) && $_GET['mode'] === 'clear') {
     exit; // Sørg for at afslutte scriptet efter header-omdirigering
 }
 
-if (isset($_GET['mode']) && $_GET['mode'] === 'changestatus') {
-    // tjek først om brugeren er admin
-    if (strpos($file_content, $allowed) === false && strpos($file_content, $allowedtomodule) === false) {
-        header('Location: tagwall.php');
-        exit;
-    }
-    
-    // Tjek om filen eksisterer, hvis ikke, opret den med standardindstillinger
-    if (!file_exists($tagwallsettings)) {
-        file_put_contents($tagwallsettings, "tagwall_closed:false");
-    }
-
-    // Læs nuværende indhold af tagwallsettings.txt
-    $settings = file_get_contents($tagwallsettings);
-
-    // Skift status mellem åben og lukket
-    if (strpos($settings, 'tagwall_closed:false') !== false) {
-        $new_settings = str_replace('tagwall_closed:false', 'tagwall_closed:true', $settings);
-    } else {
-        $new_settings = str_replace('tagwall_closed:true', 'tagwall_closed:false', $settings);
-    }
-
-    // Gem de opdaterede indstillinger tilbage til filen
-    file_put_contents($tagwallsettings, $new_settings);
-
-    // Omdiriger tilbage til tagwall.php
-    header('Location: tagwall.php');
-    exit;
-}
-
 $messages_per_page = 10;
 $current_page = isset($_GET['page']) ? $_GET['page'] : 1;
 $offset = ($current_page - 1) * $messages_per_page;
@@ -115,7 +77,7 @@ $tagwall_messages = array_slice($tagwall_messages, $offset, $messages_per_page);
         <textarea name="tagwall_text" style="height: 132px; width: 1089px;"></textarea>
         <button type="submit">Send</button>
         <a href="tagwall.php?mode=clear">Tøm Tagwall</a>
-        <a href="tagwall.php?mode=changestatus">Åben/luk Tagwallen</a>
+        
     </form>
 
     <?php foreach ($tagwall_messages as $line => $message) {
