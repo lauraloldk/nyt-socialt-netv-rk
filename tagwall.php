@@ -1,6 +1,7 @@
 <?php
 include "design.php";
 include "ostatus.php";
+require_once "log.php";
 
 $username = $_SESSION['username'];
 $tagwallpath = "data/tagwall.txt";
@@ -43,7 +44,7 @@ if (file_exists('data/users/' . $username . '/tagwallban.txt')) {
     if (isset($tagwall_messages[$id])) {
         $tagwall_messages[$id] = time() . ':' . $username . ':Denne besked er blevet slettet :end'. PHP_EOL;
         file_put_contents($tagwallpath, implode('', $tagwall_messages));
-
+        addlog($username, "Slettede besked med ID $id på tagwall");
         
     }
     // Omdiriger tilbage til tagwall.php
